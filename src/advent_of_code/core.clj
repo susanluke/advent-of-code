@@ -45,13 +45,3 @@
                  (if (not= :no-solution res)
                    (conj res x)
                    (recur xs)))))))
-
-
-(defn check-meaning-of-life
-  "Humouring Amy"
-  []
-  42)
-
-(comment
-  (check-elements 1 2 [5 4 2 3 2])
-  (foo [1 2 3]))
