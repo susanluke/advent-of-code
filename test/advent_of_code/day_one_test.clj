@@ -1,6 +1,6 @@
-(ns advent-of-code.core-test
+(ns advent-of-code.day-one-test
   (:require [clojure.test :refer :all]
-            [advent-of-code.core :as sut]))
+            [advent-of-code.day-one :as sut]))
 
 (deftest get-day1-answer-test
   (testing "Test Day 1"

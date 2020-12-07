@@ -27,8 +27,8 @@
   [{:keys [low hi letter password]}]
   (let [l1 (->> (dec low) (nth password) (= letter))
         l2 (->> (dec hi)  (nth password) (= letter))]
-    (and (or l1 l2)
-         (not (and l1 l2)))))
+    (or (and l1 (not l2))
+        (and l2 (not l1)))))
 
 (defn get-day2-answer-pt1
   []
