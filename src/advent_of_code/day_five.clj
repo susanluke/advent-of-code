@@ -18,3 +18,12 @@
   (->> (read-file)
        (map seat-code->seat-id)
        (apply max)))
+
+(defn get-day5-answer-pt2 []
+  (->> (read-file)
+       (map seat-code->seat-id)
+       (sort)
+       (reduce #(if (= (inc %) %2)
+                  %2
+                  (reduced %)))
+       inc))

@@ -4,4 +4,5 @@
 
 (deftest get-day5-answer-test
   (testing "Test Day 5"
-    (is (= 901 (sut/get-day5-answer-pt1)))))
+    (is (= 901 (sut/get-day5-answer-pt1))
+        (= 661 (sut/get-day5-answer-pt2)))))
