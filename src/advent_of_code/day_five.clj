@@ -22,7 +22,7 @@
 (defn get-day5-answer-pt2 []
   (->> (read-file)
        (map seat-code->seat-id)
-       (sort)
+       sort
        (reduce #(if (= (inc %) %2)
                   %2
                   (reduced %)))

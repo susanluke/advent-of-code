@@ -4,19 +4,19 @@
 
 (def f "day4-input.txt")
 
-(defn parse-file []
-  (->> (-> (io/resource f)
-           slurp
-           (string/split #"\n\n"))
-       (map #(string/split %1 #"\n|\s"))
-       (map data->passport-map)))
-
 (defn data->passport-map [v]
   (->> v
        (map (partial re-matches #"^(\w*):([\w#]*)$"))
        (map #(list (keyword(nth % 1)) (nth % 2)))
        flatten
        (apply hash-map)))
+
+(defn parse-file []
+  (->> (-> (io/resource f)
+           slurp
+           (string/split #"\n\n"))
+       (map #(string/split %1 #"\n|\s"))
+       (map data->passport-map)))
 
 (defn valid-passport-pt1? [p]
   (every? (partial contains? p)
@@ -35,9 +35,9 @@
          (integer? h-num) (#{"cm" "in"} h-unit) (if (= "cm" h-unit)
                                                   (<= 150 h-num 193)
                                                   (<= 59 h-num 76))
-         (re-matches #"^#[0-9a-f]{6}" hcl)
+         (re-matches #"^#[0-9a-f]{6}$" hcl)
          (#{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"} ecl)
-         (re-matches #"[0-9]{9}" pid))))
+         (re-matches #"^[0-9]{9}$" pid))))
 
 (defn get-day4-answer-pt1
   []

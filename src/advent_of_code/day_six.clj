@@ -13,13 +13,10 @@
 
 (defn get-day6-answer-pt1 []
   (->> (parse-file)
-       (map (partial apply str))
-       (map (comp count set))
+       (map (comp count set (partial apply str)))
        (apply +)))
 
 (defn get-day6-answer-pt2 []
   (->> (parse-file)
-       (map (partial map set))
-       (map (partial apply set/intersection))
-       (map count)
+       (map (comp count (partial apply set/intersection) (partial map set)))
        (apply +)))
