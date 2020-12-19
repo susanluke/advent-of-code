@@ -66,3 +66,20 @@
         bag-hold-rules (reduce add-rule-to-bag-hold {} bag-contain-rules)]
     (-> (holds-bag bag-hold-rules #{} bag-colour)
         count)))
+
+(defn num-bags-contains [bag-contain-rules bag-colour]
+  (let [contained-bags (bag-colour bag-contain-rules)]
+    (if (= [[]] contained-bags)
+      0
+      (apply +
+             (map (fn [[n c]]
+                    (+ n (* n (num-bags-contains bag-contain-rules c))) )
+                  contained-bags)
+             ))))
+
+(defn get-day7-answer-pt2 []
+  (let [bag-contain-rules (->> (read-file)
+                               (map parse-line)
+                               (reduce #(assoc %1 (first %2) (second %2))
+                                       {}))]
+    (num-bags-contains bag-contain-rules :shiny-gold)))
