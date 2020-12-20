@@ -4,4 +4,5 @@
 
 (deftest get-day9-answer-test
   (testing "Test Day 9"
-    (is (= 373803594 (sut/get-day9-answer-pt1)))))
+    (is (= 373803594 (sut/get-day9-answer-pt1)))
+    (is (= 51152360 (sut/get-day9-answer-pt2)))))

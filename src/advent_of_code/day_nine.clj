@@ -35,3 +35,22 @@
 
 (defn get-day9-answer-pt1 []
   (first-not-sum-in-preamble 25 (parse-string input-string)))
+
+(def invalid-number 373803594)
+
+(defn get-day9-answer-pt2 []
+  (let [all-nums     (parse-string input-string)
+        target       invalid-number
+        [si ei]      (loop [si 0
+                            ei 2]
+                       (let [tot (apply + (subvec all-nums si ei))]
+                         (if (= tot target)
+                           [si ei]
+                           (if (and (> target tot)
+                                    (> (count all-nums) ei))
+                             (recur si (inc ei))
+                             (recur (inc si) (+ si 3))))))
+        list-for-sum (subvec all-nums si ei)
+        li-min       (apply min list-for-sum)
+        li-max       (apply max list-for-sum)]
+    (+ li-min li-max)))
