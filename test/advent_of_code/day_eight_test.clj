@@ -4,4 +4,5 @@
 
 (deftest get-day8-answer-test
   (testing "Test Day 8"
-    (is (= 1521 (sut/get-day8-answer-pt1)))))
+    (is (= 1521 (sut/get-day8-answer-pt1)))
+    (is (= 1016 (sut/get-day8-answer-pt2)))))
