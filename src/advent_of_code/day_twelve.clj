@@ -24,16 +24,46 @@
     :W (assoc state :x (- x value))
     :L (assoc state :facing (mod (- facing value) 360))
     :R (assoc state :facing (mod (+ facing value) 360))
-    :F (case facing
-         0 (follow-direction state {:action :N :value value})
-         90 (follow-direction state {:action :E :value value})
-         180 (follow-direction state {:action :S :value value})
-         270 (follow-direction state {:action :W :value value}))))
+    :F (let [new-dir (case facing 0 :N 90 :E 180 :S 270 :W)]
+         (follow-direction state {:action new-dir :value value}))))
 
 (defn abs [n] (max n (- n)))
 
 (defn add-xy [{:keys [x y]}] (+ (abs x) (abs y)))
 
-(defn get-day12-answer-pt1 []
-  (-> (reduce follow-direction {:facing 90 :x 0 :y 0} (read-file))
+(defn get-manhattan-dist [instructions]
+  (-> (reduce follow-direction {:facing 90 :x 0 :y 0} instructions)
       add-xy))
+
+(defn get-day12-answer-pt1 []
+  (get-manhattan-dist (read-file)))
+
+(defn rotate-waypoint-right-90 [{:keys [wx wy] :as state}]
+  (-> state
+      (assoc :wx wy)
+      (assoc :wy (- wx))))
+
+(defn rotate-waypoint-right [state {:keys [value] :as instruction}]
+  (nth (iterate rotate-waypoint-right-90 state)
+       (quot value 90)))
+
+(defn follow-direction-with-waypoint [{:keys [wx wy x y] :as state}
+                                      {:keys [action value] :as instruction}]
+  (case action
+    :N (assoc state :wy (+ wy value))
+    :S (assoc state :wy (- wy value))
+    :E (assoc state :wx (+ wx value))
+    :W (assoc state :wx (- wx value))
+    :L (rotate-waypoint-right state {:action :R
+                                     :value  (mod (- value) 360)})
+    :R (rotate-waypoint-right state instruction)
+    :F (-> state
+           (assoc :x (+ (* value wx) x))
+           (assoc :y (+ (* value wy) y)))))
+
+(defn get-manhattan-dist-waypoint-instructions [instructions]
+  (-> (reduce follow-direction-with-waypoint {:wx 10 :wy 1 :x 0 :y 0} instructions)
+      add-xy))
+
+(defn get-day12-answer-pt2 []
+  (get-manhattan-dist-waypoint-instructions (read-file)))
