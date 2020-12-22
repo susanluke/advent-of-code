@@ -21,6 +21,7 @@ L.LLLLL.LL")
 (deftest get-day11-answer-test
   (testing "Test Day 11"
     ;; This takes a while to run
-    ;;(is (= 2412 (sut/get-day11-answer-pt1 sut/seat-grid)))
+    (is (= 2412 (sut/get-day11-answer-pt1 sut/seat-grid)))
     (is (= 37 (sut/get-day11-answer-pt1 test-seat-grid)))
+    (is (= 26 (sut/get-day11-answer-pt2 test-seat-grid)))
     ))
