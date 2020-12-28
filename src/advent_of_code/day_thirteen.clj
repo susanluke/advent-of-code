@@ -5,33 +5,58 @@
 (def f "day13-input.txt")
 (def input-string (-> f io/resource slurp))
 
-
 (defn parse-string [s]
   (let [[ts bs] (string/split-lines s)
         t       (read-string ts)
         buses   (->> (string/split bs #",")
-                     (remove #{"x"})
-                     (map read-string))]
+                     (map read-string)
+                     (map-indexed #(hash-map :offset % :bus %2)))]
     [t buses]))
 
 (defn get-earliest-times-for-buses [t buses]
-  (map (fn [bus] {:bus           bus
-                 :et (- bus (mod t bus))})
-       buses))
+  (map (fn [bus] {:bus bus :et (- bus (mod t bus))}) buses))
 
 (defn get-earliest-bus [bus-times]
   (reduce (fn [prev-bus new-bus]
-            (if (< (:et new-bus) (:et prev-bus))
-              new-bus
-              prev-bus))
+            (if (< (:et new-bus) (:et prev-bus)) new-bus prev-bus))
           bus-times))
 
-(defn get-day13-answer-pt1 []
-  (let [[t buses] (parse-string input-string)]
-    (->> (get-earliest-times-for-buses t buses)
+(defn get-earliest-bus-from-string [s]
+  (let [[t buses]   (parse-string s)
+        non-x-buses (->> buses
+                         (remove #(= 'x (:bus %)))
+                         (map :bus))]
+    (->> (get-earliest-times-for-buses t non-x-buses)
          get-earliest-bus
          vals
          (apply *))))
 
-(defn parst-string-for-pt2 [s]
-  )
+(defn get-day13-answer-pt1 []
+  (get-earliest-bus-from-string input-string))
+
+(defn time-seq [t freq]
+  (iterate (partial + freq) t))
+
+(defn time-and-frequency-buses-have-offset
+  [[t freq] {:keys [offset bus]}]
+  ;; Find offsets at range of times
+  (let [num-freqs (->> (time-seq t freq)
+                       (map-indexed #(vector %1 (- bus (mod %2 bus))))
+                       ;; offset must be modulo bus-num incase offset > bus
+                       (filter #(= (mod offset bus) (second %)))
+                       ffirst)]
+    ;; Return in format so we can reduce over bus list.  Since buses are all
+    ;; prime numbers, we know that they will offset every poss number and this
+    ;; offset won't appear again until b1 * b2
+    [(+ t (* num-freqs freq)) (* freq bus)]))
+
+(defn get-earliest-time-buses-have-correct-offset [s]
+  (let [[_ buses]       (parse-string s)
+        first-bus       (first buses)
+        non-x-buses     (remove #(= 'x (:bus %)) buses)]
+    (->> (rest non-x-buses)
+         (reduce time-and-frequency-buses-have-offset [0 (:bus first-bus)])
+         first)))
+
+(defn get-day13-answer-pt2 []
+  (get-earliest-time-buses-have-correct-offset input-string))
