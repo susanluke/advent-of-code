@@ -34,7 +34,7 @@
 (defn get-day13-answer-pt1 []
   (get-earliest-bus-from-string input-string))
 
-(defn time-and-frequency-buses-have-offset
+(defn time-and-frequency-bus-has-offset
   [[t freq] {:keys [offset bus]}]
   ;; Find offsets at range of times
   (let [num-freqs (->> (iterate (partial + freq) t)
@@ -52,7 +52,7 @@
         first-bus       (first buses)
         non-x-buses     (remove #(= 'x (:bus %)) buses)]
     (->> (rest non-x-buses)
-         (reduce time-and-frequency-buses-have-offset [0 (:bus first-bus)])
+         (reduce time-and-frequency-bus-has-offset [0 (:bus first-bus)])
          first)))
 
 (defn get-day13-answer-pt2 []
