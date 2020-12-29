@@ -34,20 +34,17 @@
 (defn get-day13-answer-pt1 []
   (get-earliest-bus-from-string input-string))
 
-(defn time-seq [t freq]
-  (iterate (partial + freq) t))
-
 (defn time-and-frequency-buses-have-offset
   [[t freq] {:keys [offset bus]}]
   ;; Find offsets at range of times
-  (let [num-freqs (->> (time-seq t freq)
+  (let [num-freqs (->> (iterate (partial + freq) t)
                        (map-indexed #(vector %1 (- bus (mod %2 bus))))
                        ;; offset must be modulo bus-num incase offset > bus
                        (filter #(= (mod offset bus) (second %)))
                        ffirst)]
     ;; Return in format so we can reduce over bus list.  Since buses are all
     ;; prime numbers, we know that they will offset every poss number and this
-    ;; offset won't appear again until b1 * b2
+    ;; offset won't appear again until freq * bus-freq
     [(+ t (* num-freqs freq)) (* freq bus)]))
 
 (defn get-earliest-time-buses-have-correct-offset [s]
