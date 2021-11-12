@@ -6,31 +6,29 @@
 (defn say-number [s n]
   (-> s
       (update-in [:nums n]
-                 (fnil #(conj % (:current-idx s)) '()))
+                 #(take 2 (conj % (:current-idx s))))
       (assoc :last-num n)
       (update :current-idx inc)))
 
 (defn parse-input [s]
   (->> (string/split s #",")
        (map read-string)
-       (reduce say-number
-               {:last-num    nil
-                :current-idx 0
-                :nums        {}})))
+       (reduce say-number {:current-idx 0 :nums {}})))
 
 (defn game-round [{:keys [last-num nums] :as state}]
-  (let [idxs      (nums last-num)
-        new-num (if (<= 2 (count idxs))
-                  (- (first idxs) (second idxs))
-                  0)]
-    (say-number state new-num)))
+  (let [idxs (nums last-num)]
+    (say-number state (if (<= 2 (count idxs))
+                        (- (first idxs) (second idxs))
+                        0))))
 
-(defn get-2020th-val [s]
-  (let [initial-state (parse-input s)
-        initial-idx   (:current-idx initial-state)]
+(defn get-nth-val [s n]
+  (let [initial-state (parse-input s)]
     (-> (iterate game-round initial-state)
-        (nth (- 2020 initial-idx))
+        (nth (- n (:current-idx initial-state)))
         :last-num)))
 
 (defn get-day15-answer-pt1 []
-  (get-2020th-val input))
+  (get-nth-val input 2020))
+
+(defn get-day15-answer-pt2 []
+  (get-nth-val input 30000000))

@@ -5,7 +5,7 @@
 (deftest get-day15-answer-test
   (is (= 387 (sut/get-day15-answer-pt1)))
 
-  (are [input output] (= output (sut/get-2020th-val input))
+  (are [input output] (= output (sut/get-nth-val input 2020))
     "1,3,2" 1
     "2,1,3" 10
     "1,2,3" 27
